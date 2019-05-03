@@ -1,4 +1,6 @@
 function plotPiece(piece,fid)
+%Plot a piece, as defined in setupPieces in the optionally defined figure
+%id fid
 if nargin > 1
     figure(fid);
     clf;

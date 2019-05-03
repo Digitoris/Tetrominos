@@ -1,4 +1,5 @@
 function piece = rotatePiece(piece,n)
+% Rotates a piece 90 degrees counterclockwise n times
 if nargin == 1
     n = 1;
 else

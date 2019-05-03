@@ -1,4 +1,15 @@
 function pieces = setupPieces()
+%Creates a one-by-n structure for the n pieces, with the following fields:
+%   shape           (bool) matrix with true where a piece is filled in,
+%                       false where not filled in
+%   corner          (bool) True if the top left corner is green, false if
+%                       white
+%   size            (int)  size(shape), might save computation time later
+%   orientation     (int)  0:3 orientation (zero is upwards,
+%                       propagates counterclockwise
+%   symmetry        (int)  4/2/1 number of rotational symmetry options
+%   blocks          (int)  number of squares the shape contains
+
 pieces = struct();
 
 pieces(1).shape = [1 0; 1 1];
