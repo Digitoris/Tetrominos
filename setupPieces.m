@@ -30,29 +30,32 @@ pieces(5).corner = 0;
 pieces(6).shape = [0 1; 0 1; 1 1; 1 0];
 pieces(6).corner = 0;
 
-pieces(7).shape = [1 0; 1 1; 1 0; 1 0];
-pieces(7).corner = 1;
+pieces(7).shape = [1 0; 1 0; 1 1; 0 1];
+pieces(7).corner = 0;
 
-pieces(8).shape = [1 0; 1 0; 1 1; 0 1];
-pieces(8).corner = 0;
+pieces(8).shape = [1 0; 1 1; 1 0; 1 0];
+pieces(8).corner = 1;
 
-pieces(9).shape = [0 1 1; 0 1 0; 1 1 0];
-pieces(9).corner = 1;
+pieces(7).shape = [1 0; 1 0; 1 1; 0 1];
+pieces(7).corner = 0;
 
-pieces(10).shape = [0 1; 0 1; 0 1; 1 1];
+pieces(9).shape = [0 1; 0 1; 0 1; 1 1];
+pieces(9).corner = 0;
+
+pieces(10).shape = [0 1; 1 1; 1 0];
 pieces(10).corner = 1;
 
-pieces(11).shape = [0 1; 1 1; 1 0];
+pieces(11).shape = [0 1 1; 0 1 0; 1 1 0];
 pieces(11).corner = 1;
 
 pieces(12).shape = [1 0; 1 0; 1 1];
 pieces(12).corner = 1;
 
-pieces(13).shape = [0 0 1 0; 1 1 1 1];
-pieces(13).corner = 0;
+pieces(13).shape = [0 1; 0 1; 1 1];
+pieces(13).corner = 1;
 
-pieces(14).shape = [0 1; 0 1; 1 1];
-pieces(14).corner = 1;
+pieces(14).shape = [0 0 1 0; 1 1 1 1];
+pieces(14).corner = 0;
 
 for i = 1:numel(pieces)
     pieces(i).corner = boolean(pieces(i).corner);
