@@ -1,1 +1,2 @@
 # Tetrominos
+Tetrominos is a small MATLAB project aimed at developing an automatic solver for so-called 'checkerboard puzzles', a subset ofcombinatorial puzzles with [polyominoes](https://en.wikipedia.org/wiki/Polyomino).
