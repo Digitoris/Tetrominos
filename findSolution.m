@@ -1,4 +1,4 @@
-function solution = findSolution(pieces,field)
+function [corners,cornerOptions] = findSolution(pieces,field)
 %% Setup solution and field
 if ~isstruct(pieces)
     error('pieces must be a piece-structure')
@@ -13,7 +13,7 @@ structErrorMsg = [structErrorMsg verifyField(pieces,'size')];
 structErrorMsg = [structErrorMsg verifyField(pieces,'blocks')];
 structErrorMsg = [structErrorMsg verifyField(field,'size')];
 if ~isempty(structErrorMsg)
-    error(structErrorMsg)
+    error(sprintf(structErrorMsg))
 end
 
 dataErrorMsg = '';
@@ -39,11 +39,11 @@ for i = 1:numel(pieces)
     end
 end
 if isempty(field.size) || ~all(size(field.size)== [1 2]) || ~all(isnumeric(field.size)) || ~all(fix(field.size) == field.size) 
-    msg = sprintf('Invalid entry: field.size\\n',i);
+    msg = ['Invalid entry: field.size\\n'];
     dataErrorMsg = [dataErrorMsg msg];
 end
 if ~isempty(dataErrorMsg)
-    error(dataErrorMsg)
+    error(sprintf(dataErrorMsg))
 end
 if totalBlocks ~= prod(field.size)
     error('Number of blocks does not match field size: %i blocks in %i spaces',blocks,prod(field.size))
@@ -61,14 +61,11 @@ clear('dataErrorMsg','structErrorMsg','totalBlocks','i')
 cornerOptions = cell(2,2,2);
 
 for i = 1:numel(pieces)
-    [white,green] = analyzeCorners(pieces(i));
+    cornerAnalysis = analyzeCorners(pieces(i))+1;
     for ix = 1:2
         for iy = 1:2
-            if white(iy,ix)
-                cornerOptions{iy,ix,1}(end+1) = i;
-            end
-            if green(iy,ix)
-                cornerOptions{iy,ix,2}(end+1) = i;
+            if cornerAnalysis(iy,ix) ~= 0
+                cornerOptions{iy,ix,cornerAnalysis(iy,ix)}(end+1) = i;
             end
         end
     end
@@ -91,20 +88,21 @@ for ix = 1:2
     end
 end
 
-corners = cell(2,2);
-for ix = 1:2
-    dx = (ix-1)*(field.size(2)-1);
-    for iy = 1:2
-        dy = (iy-1)*(field.size(1)-1);
-        if isempty(field.corner)
-            corners{iy,ix} = [cornerOptions{iy,ix,:}];
-        else
+
+if isempty(field.corner)
+    corners{iy,ix} = cellfun(@(x,y) [x y],cornerOptions(:,:,1),cornerOptions(:,:,2),'un',0);
+else
+    corners = cell(2,2);   
+    for ix = 1:2
+        dx = (ix-1)*(field.size(2)-1);
+        for iy = 1:2
+            dy = (iy-1)*(field.size(1)-1);
             corners(iy,ix) = cornerOptions(iy,ix,mod(field.corner + dx + dy,2)+1);
         end
     end
 end
 
-clear('cornerColor','cornerOptions','dx','dy','green','i','ic','ix','iy','white')
+clear('cornerAnalysis','cornerOptions','cornerColor','dx','dy','i','ic','ix','iy')
 %% Eliminate Corners
 
 %% Final Cleanup
