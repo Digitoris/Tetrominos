@@ -1,4 +1,6 @@
-function result = testSolution(solution,board,pieces)
+function [result,boardData] = testSolution(solution)
+board = solution.board;
+pieces = solution.pieces;
 result = false;
 boardData = zeros(board.size);
 for i = 1:numel(solution.id)
@@ -15,18 +17,14 @@ for i = 1:numel(solution.id)
         fprintf('Solution failed at piece %i [id:%i], exceeding bounds\n',i,solution.id(i));
         return;
     end
-    for iy = 1:piece.size(1)
-        y = solution.y(i) + iy;
-        for ix = 1:piece.size(2)
-            x = solution.x(i) + ix;
-            if piece.shape(iy,ix)
-                if boardData(y,x) ~= 0
-                    fprintf('Solution failed at piece %i [id:%i], overlapping at y,x = %i,%i\n',i,solution.id(i),y,x)
-                    return;
-                end
-                boardData(y,x) = 1;
-            end
+    for b = 1:piece.blocks
+        x = solution.x(i) + piece.xData(b);
+        y = solution.y(i) + piece.yData(b);
+        if boardData(y,x) ~= 0
+            fprintf('Solution failed at piece %i [id:%i], overlapping at y,x = %i,%i\n',i,solution.id(i),y,x)
+            return;
         end
+        boardData(y,x) = solution.id(i);
     end
 end
 result = true;

@@ -30,31 +30,30 @@ else
     end
 end
 
-for x = 1:piece.size(2)
-    for y = 1:piece.size(1)
-        if piece.shape(y,x)
-            if mod(x + y, 2) ~= piece.corner
-                color = [0.44 0.68 0.18];
-            else
-                color = [1 1 1];
-            end
-            patch(dx + x + [0 1 1 0],- dy - y - [0 0 1 1 ],color,'EdgeColor',[0 0 0])
-            
-            % Outside edges %
-            if x == 1 || piece.shape(y,x-1) == 0
-                plot(dx + [x x],- dy - y - [0 1],'Color',[0 0 0],'LineWidth',3)
-            end
-            if x == piece.size(2) || piece.shape(y,x+1) == 0
-                plot(dx + [x x] + 1,- dy - y - [0 1],'Color',[0 0 0],'LineWidth',3)
-            end
-            if y == 1 || piece.shape(y-1,x) == 0
-                plot(dx + x + [0 1],- dy -[y y],'Color',[0 0 0],'LineWidth',3)
-            end
-            if y == piece.size(1) || piece.shape(y+1,x) == 0
-                plot(dx + x + [0 1],- dy -[y y] - 1,'Color',[0 0 0],'LineWidth',3)
-            end
-            
-        end
+%AFFECTED
+shape = constructShape(piece);
+for b = 1:piece.blocks
+    x = piece.xData(b);
+    y = piece.yData(b);
+    if mod(x + y, 2) ~= piece.corner
+        color = [0.44 0.68 0.18];
+    else
+        color = [1 1 1];
+    end
+    patch(dx + x + [0 1 1 0],- dy - y - [0 0 1 1 ],color,'EdgeColor',[0 0 0])
+
+    % Outside edges %
+    if x == 1 || shape(y,x-1) == 0
+        plot(dx + [x x],- dy - y - [0 1],'Color',[0 0 0],'LineWidth',3)
+    end
+    if x == piece.size(2) || shape(y,x+1) == 0
+        plot(dx + [x x] + 1,- dy - y - [0 1],'Color',[0 0 0],'LineWidth',3)
+    end
+    if y == 1 || shape(y-1,x) == 0
+        plot(dx + x + [0 1],- dy -[y y],'Color',[0 0 0],'LineWidth',3)
+    end
+    if y == piece.size(1) || shape(y+1,x) == 0
+        plot(dx + x + [0 1],- dy -[y y] - 1,'Color',[0 0 0],'LineWidth',3)
     end
 end
 end
