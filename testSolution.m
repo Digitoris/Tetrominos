@@ -1,6 +1,4 @@
-function [result,boardData] = testSolution(solution)
-board = solution.board;
-pieces = solution.pieces;
+function [result,boardData] = testSolution(solution,board,pieces)
 result = false;
 boardData = zeros(board.size);
 for i = 1:numel(solution.id)

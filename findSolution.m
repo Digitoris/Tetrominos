@@ -1,4 +1,4 @@
-function [corners] = findSolution(pieces,board)
+function [solutions] = findSolution(pieces,board,allSolutions)
 %% Setup solution and field
 if ~isstruct(pieces)
     error('pieces must be a piece-structure')
@@ -19,6 +19,10 @@ end
 dataErrorMsg = '';
 totalBlocks = 0;
 for i = 1:numel(pieces)
+    if isempty(pieces(i).id) || numel(pieces(i).id) > 1 || ~isnumeric(pieces(i).id) || pieces(i).id < 1 || fix(pieces(i).id) ~= pieces(i).id
+        msg = sprintf('Invalid entry: piece(%i).id\\n',i);
+        dataErrorMsg = [dataErrorMsg msg];
+    end
     if isempty(pieces(i).shape) || ~islogical(pieces(i).shape)
         msg = sprintf('Invalid entry: piece(%i).shape\\n',i);
         dataErrorMsg = [dataErrorMsg msg];
@@ -52,25 +56,28 @@ end
 if ~isfield(board,'corner')
     board.corner = [];
 end
-solution.id = [];
-solution.x = [];
-solution.y = [];
+
+solutionIdx = 0;
+solutions = struct('id',{},'x',{},'y',{});
 
 clear('dataErrorMsg','structErrorMsg','totalBlocks','i')
 %% Analyze corners
-cornerOptions = cell(2,2,2);
 
+% Analyze the pieces on corner fit
+cornerOptions = cell(2,2,2);
 for i = 1:numel(pieces)
-    cornerAnalysis = analyzeCorners(pieces(i))+1;
+    cornerAnalysis = analyzeCorners(pieces(i));
     for ix = 1:2
         for iy = 1:2
-            if cornerAnalysis(iy,ix) ~= 0
-                cornerOptions{iy,ix,cornerAnalysis(iy,ix)}(end+1) = i;
+            if cornerAnalysis(iy,ix) ~= -1
+                cornerOptions{iy,ix,cornerAnalysis(iy,ix)+1}(end+1) = pieces(i).id;
             end
         end
     end
 end
 
+% See if the boards color is already set by the current selection, or if a
+% corner has no options
 for ix = 1:2
     dx = (ix-1)*(board.size(2)-1);
     for iy = 1:2
@@ -88,7 +95,7 @@ for ix = 1:2
     end
 end
 
-
+% Apply the newfound solution to finalize corner selection
 if isempty(board.corner)
     corners{iy,ix} = cellfun(@(x,y) [x y],cornerOptions(:,:,1),cornerOptions(:,:,2),'un',0);
 else
@@ -103,35 +110,38 @@ else
 end
 
 clear('cornerAnalysis','cornerOptions','cornerColor','dx','dy','i','ic','ix','iy')
-%% Eliminate Corners
-cornerCounts = cellfun(@length,corners);
-[sortedCornerCounts,sortedCornerLocations] = sort(cornerCounts(:));
+%% Loop trough corners
+if ~allSolutions
+    [~,cornerOrder] = sort(cellfun(@length,corners(:)));
+else
+    cornerOrder = 1:4;
+end
+
+remainingPieces = [pieces.id];
 
 for i = 1:4
-    cornerLocation = sortedCornerLocations(i);
-    cornerSelection = corners{cornerLocation};
-    remainingPieces = 1:numel(pieces);
-    
-    n = numel(CornerSelection);
-    tempSolution(1:n).id = [];
-    tempSolution(1:n).x = [];
-    tempSolution(1:n).y = [];
-    
-    for j = 1:numel(cornerSelection)
-        % DO SOMETHING RECURSIVELY
-%         %Place corner
-%         somewhere.x(someplace) = mod(cornerLocation+1,2)*(board.size(2) - pieces(cornerSelection(j)).size(2));
-%         somewhere.y(someplace) = (cornerLocation > 2)*(board.size(1) - pieces(cornerSelection(j)).size(1));
-% 
-%         somewhere.id(someplace) = cornerSelection(j);
-%         
-%         %Test options
-%         
+    cornerSelection = corners{cornerOrder(i)};
+        
+    for cornerID = cornerSelection
+        solution.id = cornerID;
+        solution.x = mod(cornerOrder(i)+1,2)*(board.size(2) - pieces(cornerID).size(2));
+        solution.y = (cornerOrder(i) > 2)*(board.size(1) - pieces(cornerID).size(1));
+        solution.board = board;
+        if isempty(solution.board.corner)
+            solution.board.corner =  mod(pieces(cornerID).corner + solution.x + solution.y,2);
+        end
+        
+        [~,boardData] = testSolution(solution,board,pieces);
+        tempRemainingPieces = remainingPieces(remainingPieces ~= cornerID);
+        
+        solutionSet = recurse(solution,pieces,boardData,tempRemainingPieces,1,1);
+        if ~isempty(solutionSet)
+            solutionIdx = solutionIdx + 1;
+            solutions(solutionIdx).board = solution.board;
+            solutions(solutionIdx).set = solutionSet;
+        end
     end
 end
 
-
-%% Final Cleanup
-solution.board = board;
-solution.pieces = pieces;
+%% Finalize
 end
