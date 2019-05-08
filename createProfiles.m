@@ -11,7 +11,7 @@ for i = 1:n
     profiles(i).constraints(3) = coords.x(i) == 1 || boardData(coords.y(i),coords.x(i)-1) ~= 0;
     profiles(i).constraints(4) = coords.x(i) == board.size(2) || boardData(coords.y(i),coords.x(i)+1) ~= 0;
 end
-if sorted
+if sorted && n > 1
     total = zeros(n,1);
     for i = 1:n
         total(i) = sum(profiles(i).constraints);

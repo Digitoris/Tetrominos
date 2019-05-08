@@ -1,15 +1,14 @@
-function perimeter = getPerimeter(boardData,solution,n)
-
-perimeter.y = zeros(3*solution.pieces(solution.id(n)).blocks,1);
-perimeter.x = zeros(3*solution.pieces(solution.id(n)).blocks,1);
+function perimeter = getPerimeter(boardData,solution,pieces,n)
+perimeter.y = zeros(3*pieces(solution.id(n)).blocks,1);
+perimeter.x = zeros(3*pieces(solution.id(n)).blocks,1);
 perimeterData = false(solution.board.size);
 xOff = [-1 0 1 0];
 yOff = [0 1 0 -1];
 
 m = 0;
-for b = 1:solution.pieces(solution.id(n)).blocks
-    x = solution.pieces(solution.id(n)).xData(b) + solution.x(n);
-    y = solution.pieces(solution.id(n)).yData(b) + solution.y(n);
+for b = 1:pieces(solution.id(n)).blocks
+    x = pieces(solution.id(n)).xData(b) + solution.x(n);
+    y = pieces(solution.id(n)).yData(b) + solution.y(n);
     
     for i = 1:4
         yNew = y+yOff(i);
