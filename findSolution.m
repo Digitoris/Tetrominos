@@ -53,9 +53,9 @@ function [solutions] = findSolution(pieces,board)
 %     error('Number of blocks does not match board size: %i blocks in %i spaces',blocks,prod(board.size))
 % end
 % 
-% if ~isfield(board,'corner')
-%     board.corner = [];
-% end
+if ~isfield(board,'corner')
+    board.corner = [];
+end
 % 
 % 
 % 
