@@ -73,11 +73,10 @@ for i = 1:numel(pieces)
     pieces(i).size = [max(pieces(i).yData) max(pieces(i).xData)];
     pieces(i).blocks = numel(pieces(i).yData);
     pieces(i).orientation = 0;
-    %pieces(i).symmetry = 4;
+    pieces(i).symmetry = 4;
     pieces(i).id = i;
-    
-    %{
-    TODO
+    pieces(i).shape = constructShape(pieces(i));
+
     tempPiece = rotatePiece(pieces(i),2);
     if all(tempPiece.size == pieces(i).size) && all(tempPiece.shape(:)==pieces(i).shape(:))
         pieces(i).symmetry = pieces(i).symmetry/2;
@@ -87,6 +86,5 @@ for i = 1:numel(pieces)
     if all(tempPiece.size == pieces(i).size) && all(tempPiece.shape(:)==pieces(i).shape(:))
         pieces(i).symmetry = pieces(i).symmetry/2;
     end
-    %}
 end
 end

@@ -4,15 +4,14 @@ x = y;
 flag = false(4,1);
 i = 0;
 
-shape = constructShape(piece);
 for pIdx = 1:numel(profiles)
     for ib = 1:piece.blocks
         color = mod(piece.corner + piece.xData(ib) + piece.yData(ib),2);
         if color == profiles(pIdx).color
-            flag(1) = piece.yData(ib) == 1 || ~shape(piece.yData(ib)-1,piece.xData(ib));
-            flag(2) = piece.yData(ib) == piece.size(1) ||  ~shape(piece.yData(ib)+1,piece.xData(ib));
-            flag(3) = piece.xData(ib) == 1 || ~shape(piece.yData(ib),piece.xData(ib)-1);
-            flag(4) = piece.xData(ib) == piece.size(2) || ~shape(piece.yData(ib),piece.xData(ib)+1);
+            flag(1) = piece.yData(ib) == 1 || ~piece.shape(piece.yData(ib)-1,piece.xData(ib));
+            flag(2) = piece.yData(ib) == piece.size(1) ||  ~piece.shape(piece.yData(ib)+1,piece.xData(ib));
+            flag(3) = piece.xData(ib) == 1 || ~piece.shape(piece.yData(ib),piece.xData(ib)-1);
+            flag(4) = piece.xData(ib) == piece.size(2) || ~piece.shape(piece.yData(ib),piece.xData(ib)+1);
 
             if all(and(flag,profiles(pIdx).constraints)==profiles(pIdx).constraints)
                 newY = profiles(pIdx).y - (piece.yData(ib)-1);
