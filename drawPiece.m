@@ -4,7 +4,7 @@ function drawPiece(piece,varargin)
 
 dx = 0;
 dy = 0;
-
+rot = 1;
 if nargin < 2
     figure()
     setupFigure()
@@ -24,18 +24,19 @@ else
         elseif strcmp(varargin{i-1},'dy')
             assert(isnumeric(varargin{i}))
             dy = varargin{i};
+        elseif strcmp(varargin{i-1},'rot')
+            assert(isnumeric(varargin{i}))
+            rot = varargin{i};
         else
            error('Invalid input no. %i',i-1);
         end
     end
 end
 
-%AFFECTED
-shape = constructShape(piece);
 for b = 1:piece.blocks
-    x = piece.xData(b);
-    y = piece.yData(b);
-    if mod(x + y, 2) ~= piece.corner
+    x = piece.xData{rot}(b);
+    y = piece.yData{rot}(b);
+    if mod(x + y, 2) ~= piece.corner{rot}
         color = [0.44 0.68 0.18];
     else
         color = [1 1 1];
@@ -43,16 +44,16 @@ for b = 1:piece.blocks
     patch(dx + x + [0 1 1 0],- dy - y - [0 0 1 1 ],color,'EdgeColor',[0 0 0])
 
     % Outside edges %
-    if x == 1 || shape(y,x-1) == 0
+    if x == 1 || piece.shape{rot}(y,x-1) == 0
         plot(dx + [x x],- dy - y - [0 1],'Color',[0 0 0],'LineWidth',3)
     end
-    if x == piece.size(2) || shape(y,x+1) == 0
+    if x == piece.size{rot}(2) || piece.shape{rot}(y,x+1) == 0
         plot(dx + [x x] + 1,- dy - y - [0 1],'Color',[0 0 0],'LineWidth',3)
     end
-    if y == 1 || shape(y-1,x) == 0
+    if y == 1 || piece.shape{rot}(y-1,x) == 0
         plot(dx + x + [0 1],- dy -[y y],'Color',[0 0 0],'LineWidth',3)
     end
-    if y == piece.size(1) || shape(y+1,x) == 0
+    if y == piece.size{rot}(1) || piece.shape{rot}(y+1,x) == 0
         plot(dx + x + [0 1],- dy -[y y] - 1,'Color',[0 0 0],'LineWidth',3)
     end
 end

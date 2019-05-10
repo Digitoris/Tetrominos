@@ -1,15 +1,4 @@
-function pieces = setupPieces()
-%Creates a one-by-n structure for the n pieces, with the following fields:
-%   shape           (bool) matrix with true where a piece is filled in,
-%                       false where not filled in
-%   corner          (bool) True if the top left corner is green, false if
-%                       white
-%   size            (int)  size(shape), might save computation time later
-%   orientation     (int)  0:3 orientation (zero is upwards,
-%                       propagates counterclockwise
-%   symmetry        (int)  4/2/1 number of rotational symmetry options
-%   blocks          (int)  number of squares the shape contains
-
+function output = setupPieces()
 pieces = struct();
 
 pieces(1).xData = [1 1 2];
@@ -68,23 +57,27 @@ pieces(14).xData = [3 1 2 3 4];
 pieces(14).yData = [1 2 2 2 2];
 pieces(14).corner = 0;
 
+c = cell(1,numel(pieces));
+output = struct('id',c,'corner',c,'size',c,'blocks',c,'symmetry',c,'shape',c,'xData',c,'yData',c);
 for i = 1:numel(pieces)
-    pieces(i).corner = boolean(pieces(i).corner);
-    pieces(i).size = [max(pieces(i).yData) max(pieces(i).xData)];
-    pieces(i).blocks = numel(pieces(i).yData);
-    pieces(i).orientation = 0;
-    pieces(i).symmetry = 4;
-    pieces(i).id = i;
-    pieces(i).shape{1} = constructShape(pieces(i));
-
-    tempPiece = rotatePiece(pieces(i),2);
-    if all(tempPiece.size == pieces(i).size) && all(tempPiece.shape(:)==pieces(i).shape(:))
-        pieces(i).symmetry = pieces(i).symmetry/2;
-    end
-    
-    tempPiece = rotatePiece(pieces(i),1);
-    if all(tempPiece.size == pieces(i).size) && all(tempPiece.shape(:)==pieces(i).shape(:))
-        pieces(i).symmetry = pieces(i).symmetry/2;
+    output(i).blocks = numel(pieces(i).yData);
+    output(i).id = i;
+    output(i).corner = cell(4,1);
+    output(i).size = cell(4,1);
+    output(i).xData = cell(4,1);
+    output(i).yData = cell(4,1);
+    output(i).shape = cell(4,1);
+    for j = 1:4
+        output(i).corner{j} = boolean(pieces(i).corner);
+        output(i).size{j} = [max(pieces(i).yData) max(pieces(i).xData)];
+        output(i).xData{j} = pieces(i).xData;
+        output(i).yData{j} = pieces(i).xData;
+        output(i).shape{j} = constructShape(pieces(i));
+        
+        temp = pieces(i).xData;
+        pieces(i).xData = -pieces(i).yData + output(i).size{j}(1) + 1;
+        pieces(i).yData = temp;
+        pieces(i).corner = mod(pieces(i).corner + output(i).size{j}(1) - 1,2);
     end
 end
 end

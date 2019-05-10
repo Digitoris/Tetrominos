@@ -1,11 +1,18 @@
-function corners = analyzeCorners(piece)
-corners = -ones(2,2);
+function corners = analyzeCorners(pieces)
+corners = cell(4,2);
+for ip = 1:numel(pieces)
+    c = [pieces(ip).shape{1}(1,1);
+        pieces(ip).shape{1}(1,end);
+        pieces(ip).shape{1}(end,end);
+        pieces(ip).shape{1}(end,1)];
 
-for b = 1:piece.blocks
-    f1 = piece.yData(b) == 1;
-    f2 = piece.xData(b) == 1;
-    if (piece.yData(b) == 1 || piece.yData(b) == piece.size(1)) && (piece.xData(b) == 1 || piece.xData(b) == piece.size(2))
-        corners(~f1+1,~f2+1) = mod(piece.corner + piece.yData(b) + piece.xData(b),2);
+    for ic = 1:4
+        if c(ic)
+            for i = 1:4
+                cIdx = mod(ic+i-1,4)+1;
+                corners{i,pieces(ip).corner{cIdx}+1}(end+1,:) = [pieces(ip).id cIdx];
+            end
+        end
     end
 end
 end

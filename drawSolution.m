@@ -6,12 +6,12 @@ hold on
 
 ax = gca;
 
-if any(size(solution.id) ~= size(solution.x)) || any(size(solution.id) ~= size(solution.y))
+if any(size(solution.id) ~= size(solution.x)) || any(size(solution.id) ~= size(solution.y)) || any(size(solution.id) ~= size(solution.rot))
     error('Invalid solution (dim size)')
 end
 
 for i = 1:numel(solution.id)
     drawPiece(pieces(solution.id(i)),'axes',ax,...
-        'dx',solution.x(i),'dy',solution.y(i));
+        'dx',solution.x(i),'dy',solution.y(i),'rot',solution.rot(i));
 end
 end
