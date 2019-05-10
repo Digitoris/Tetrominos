@@ -75,7 +75,7 @@ for i = 1:numel(pieces)
     pieces(i).orientation = 0;
     pieces(i).symmetry = 4;
     pieces(i).id = i;
-    pieces(i).shape = constructShape(pieces(i));
+    pieces(i).shape{1} = constructShape(pieces(i));
 
     tempPiece = rotatePiece(pieces(i),2);
     if all(tempPiece.size == pieces(i).size) && all(tempPiece.shape(:)==pieces(i).shape(:))
